@@ -1,11 +1,9 @@
 package com.nnk.springboot.services;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.nnk.springboot.domain.User;
 import com.nnk.springboot.repositories.UserRepository;
 
@@ -16,7 +14,7 @@ public class UserService {
 	@Autowired
 	private UserRepository userRepository;
 
-	public void saveUser(User user) {
+	public void saveUser(User user) {		
 		userRepository.save(user);
 	}
 
@@ -37,5 +35,4 @@ public class UserService {
 	public void updateUser(User user) {
 		userRepository.save(user);
 	}
-
 }
