@@ -1,21 +1,18 @@
 package com.nnk.springboot.domain;
 
-import org.hibernate.validator.constraints.Length;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import java.sql.Timestamp;
-import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
+
 import java.util.Date;
 
 @Entity
-@Table(name = "CurvePoint")
+@Table(name = "curvepoint")
 public class CurvePoint {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "Id")
     private Integer id;
 
@@ -26,14 +23,15 @@ public class CurvePoint {
     private Date asOfDate;
 
     @Column(name = "term")
+    @Positive(message = "Term must be greater than 0")
     private Double term;
 
     @Column(name = "value")
+    @Positive(message = "Value must be greater than 0")
     private Double value;
 
     @Column(name = "creationDate")
     private Date creationDate;
-
     
 	public CurvePoint() {
 	
