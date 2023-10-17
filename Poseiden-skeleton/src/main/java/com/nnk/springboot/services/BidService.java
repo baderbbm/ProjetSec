@@ -17,7 +17,6 @@ public class BidService {
         this.bidListRepository = bidListRepository;
     }
 
-   
     public BidList createBid(BidList bid) {
         return bidListRepository.save(bid);
     }
