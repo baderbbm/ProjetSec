@@ -2,28 +2,30 @@ package com.nnk.springboot.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import java.sql.Timestamp;
-import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "Trade")
+@Table(name = "trade")
 public class Trade {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "TradeId")
     private Integer tradeId;
 
-    @Column(name = "account", nullable = false)
+    @Column(name = "account")
+    @NotBlank(message = "Account is mandatory")
     private String account;
 
-    @Column(name = "type", nullable = false)
+    @Column(name = "type")
+    @NotBlank(message = "Account is mandatory")
     private String type;
 
     @Column(name = "buyQuantity")
+    @Positive(message = "Bid Quantity must be greater than 0")
     private Double buyQuantity;
 
     @Column(name = "sellQuantity")
@@ -38,47 +40,50 @@ public class Trade {
     @Column(name = "tradeDate")
     private Date tradeDate;
 
-    @Column(name = "security", length = 125)
+    @Column(name = "security")
     private String security;
 
-    @Column(name = "status", length = 10)
+    @Column(name = "status")
     private String status;
 
-    @Column(name = "trader", length = 125)
+    @Column(name = "trader")
     private String trader;
 
-    @Column(name = "benchmark", length = 125)
+    @Column(name = "benchmark")
     private String benchmark;
 
-    @Column(name = "book", length = 125)
+    @Column(name = "book")
     private String book;
 
-    @Column(name = "creationName", length = 125)
+    @Column(name = "creationName")
     private String creationName;
 
     @Column(name = "creationDate")
     private Date creationDate;
 
-    @Column(name = "revisionName", length = 125)
+    @Column(name = "revisionName")
     private String revisionName;
 
     @Column(name = "revisionDate")
     private Date revisionDate;
 
-    @Column(name = "dealName", length = 125)
+    @Column(name = "dealName")
     private String dealName;
 
-    @Column(name = "dealType", length = 125)
+    @Column(name = "dealType")
     private String dealType;
 
-    @Column(name = "sourceListId", length = 125)
+    @Column(name = "sourceListId")
     private String sourceListId;
 
-    @Column(name = "side", length = 125)
+    @Column(name = "side")
     private String side;
 
+    public Trade() {
+		
+	}
     
-    
+   
 	public Trade(String account, String type) {
 		this.account = account;
 		this.type = type;
