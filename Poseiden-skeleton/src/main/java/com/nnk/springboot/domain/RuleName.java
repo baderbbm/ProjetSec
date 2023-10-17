@@ -4,34 +4,38 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import java.sql.Timestamp;
-import jakarta.persistence.*;
 
 @Entity
-@Table(name = "RuleName")
+@Table(name = "rulename")
 public class RuleName {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "Id")
 	private Integer id;
 
-	@Column(name = "name", length = 125)
+	@Column(name = "name")
+    @NotBlank(message = "Account is mandatory")
 	private String name;
 
-	@Column(name = "description", length = 125)
+	@Column(name = "description")
+    @NotBlank(message = "Account is mandatory")
 	private String description;
 
-	@Column(name = "json", length = 125)
+	@Column(name = "json")
+    @NotBlank(message = "Account is mandatory")
 	private String json;
 
-	@Column(name = "template", length = 512)
+	@Column(name = "template")
+    @NotBlank(message = "Account is mandatory")
 	private String template;
 
-	@Column(name = "sqlStr", length = 125)
+	@Column(name = "sqlStr")
+    @NotBlank(message = "Account is mandatory")
 	private String sqlStr;
 
-	@Column(name = "sqlPart", length = 125)
+	@Column(name = "sqlPart")
+    @NotBlank(message = "Account is mandatory")
 	private String sqlPart;
 
 	public RuleName() {
