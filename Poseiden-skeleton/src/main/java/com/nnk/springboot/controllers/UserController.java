@@ -16,19 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class UserController {
 
-	/*
-	 * @Autowired private UserRepository userRepository;
-	 * 
-	 */
-
 	@Autowired
 	private UserService userService;
 
-	/*
-	 * @RequestMapping("/user/list") public String home(Model model) {
-	 * model.addAttribute("users", userRepository.findAll()); return "user/list"; }
-	 * 
-	 */
 
 	@RequestMapping("/user/list")
 	public String home(Model model) {
@@ -40,17 +30,7 @@ public class UserController {
 	public String addUser(User bid) {
 		return "user/add";
 	}
-	/*
-	 * @PostMapping("/user/validate") public String
-	 * validate(@jakarta.validation.Valid User user, BindingResult result, Model
-	 * model) { if (!result.hasErrors()) { BCryptPasswordEncoder encoder = new
-	 * BCryptPasswordEncoder();
-	 * user.setPassword(encoder.encode(user.getPassword()));
-	 * userRepository.save(user); model.addAttribute("users",
-	 * userRepository.findAll()); return "redirect:/user/list"; } return "user/add";
-	 * }
-	 * 
-	 */
+
 
 	@PostMapping("/user/validate")
 	public String validate(@Valid User user, BindingResult result, Model model) {
@@ -64,15 +44,6 @@ public class UserController {
 		return "user/add";
 	}
 
-	/*
-	 * @GetMapping("/user/update/{id}") public String
-	 * showUpdateForm(@PathVariable("id") Integer id, Model model) { User user =
-	 * userRepository.findById(id).orElseThrow(() -> new
-	 * IllegalArgumentException("Invalid user Id:" + id)); user.setPassword("");
-	 * model.addAttribute("user", user); return "user/update"; }
-	 * 
-	 */
-
 	@GetMapping("/user/update/{id}")
 	public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
 		User user = userService.getUserById(id);
@@ -81,17 +52,6 @@ public class UserController {
 		return "user/update";
 	}
 
-	/*
-	 * @PostMapping("/user/update/{id}") public String
-	 * updateUser(@PathVariable("id") Integer id, @Valid User user, BindingResult
-	 * result, Model model) { if (result.hasErrors()) { return "user/update"; }
-	 * 
-	 * BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-	 * user.setPassword(encoder.encode(user.getPassword())); user.setId(id);
-	 * userRepository.save(user); model.addAttribute("users",
-	 * userRepository.findAll()); return "redirect:/user/list"; }
-	 * 
-	 */
 
 	@PostMapping("/user/update/{id}")
 	public String updateUser(@PathVariable("id") Integer id, @Valid User user, BindingResult result, Model model) {
@@ -109,15 +69,6 @@ public class UserController {
 
 		return "redirect:/user/list";
 	}
-
-	/*
-	 * @GetMapping("/user/delete/{id}") public String deleteUser(@PathVariable("id")
-	 * Integer id, Model model) { User user =
-	 * userRepository.findById(id).orElseThrow(() -> new
-	 * IllegalArgumentException("Invalid user Id:" + id));
-	 * userRepository.delete(user); model.addAttribute("users",
-	 * userRepository.findAll()); return "redirect:/user/list"; }
-	 */
 	
 	@GetMapping("/user/delete/{id}")
 	public String deleteUser(@PathVariable("id") Integer id, Model model) {
