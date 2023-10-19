@@ -1,47 +1,57 @@
 package com.nnk.springboot;
 
 import com.nnk.springboot.domain.CurvePoint;
-import com.nnk.springboot.repositories.CurvePointRepository;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import com.nnk.springboot.services.CurveService;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.List;
-import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class CurvePointTests {
 
-	@Autowired
-	private CurvePointRepository curvePointRepository;
+    @Autowired
+    private CurveService curveService;
 
-	@Test
-	public void curvePointTest() {
-		CurvePoint curvePoint = new CurvePoint(10, 10d, 30d);
+    @Test
+    public void testCreateCurvePoint() {
+        CurvePoint curvePoint = new CurvePoint(1, 5.0, 10.0);
+        CurvePoint savedCurvePoint = curveService.createCurve(curvePoint);
+        assertNotNull(savedCurvePoint.getId());
+        assertEquals(5.0, savedCurvePoint.getTerm(), 0.001);
+        assertEquals(10.0, savedCurvePoint.getValue(), 0.001);
+    }
 
-		// Save
-		curvePoint = curvePointRepository.save(curvePoint);
-		Assert.assertNotNull(curvePoint.getId());
-		Assert.assertTrue(curvePoint.getCurveId() == 10);
+    @Test
+    public void testFindCurvePointById() {
+        CurvePoint curvePoint = new CurvePoint(1, 5.0, 10.0);
+        CurvePoint savedCurvePoint = curveService.createCurve(curvePoint);
+        CurvePoint foundCurvePoint = curveService.findCurveById(savedCurvePoint.getId());
+        assertNotNull(foundCurvePoint);
+        assertEquals(savedCurvePoint.getId(), foundCurvePoint.getId());
+        assertEquals(savedCurvePoint.getCurveId(), foundCurvePoint.getCurveId());
+        assertEquals(savedCurvePoint.getTerm(), foundCurvePoint.getTerm(), 0.001);
+        assertEquals(savedCurvePoint.getValue(), foundCurvePoint.getValue(), 0.001);
+    }
 
-		// Update
-		curvePoint.setCurveId(20);
-		curvePoint = curvePointRepository.save(curvePoint);
-		Assert.assertTrue(curvePoint.getCurveId() == 20);
+    @Test
+    public void testUpdateCurvePoint() {
+        CurvePoint curvePoint = new CurvePoint(1, 5.0, 10.0);
+        CurvePoint savedCurvePoint = curveService.createCurve(curvePoint);
+        savedCurvePoint.setTerm(6.0);
+        savedCurvePoint.setValue(11.0);
+        curveService.updateCurve(savedCurvePoint);
+        CurvePoint updatedCurvePoint = curveService.findCurveById(savedCurvePoint.getId());
+        assertEquals(6.0, updatedCurvePoint.getTerm(), 0.001);
+        assertEquals(11.0, updatedCurvePoint.getValue(), 0.001);
+    }
 
-		// Find
-		List<CurvePoint> listResult = curvePointRepository.findAll();
-		Assert.assertTrue(listResult.size() > 0);
-
-		// Delete
-		Integer id = curvePoint.getId();
-		curvePointRepository.delete(curvePoint);
-		Optional<CurvePoint> curvePointList = curvePointRepository.findById(id);
-		Assert.assertFalse(curvePointList.isPresent());
-	}
-
+    @Test
+    public void testDeleteCurvePoint() {
+        CurvePoint curvePoint = new CurvePoint(1, 5.0, 10.0);
+        CurvePoint savedCurvePoint = curveService.createCurve(curvePoint);
+        curveService.deleteCurveById(savedCurvePoint.getId());
+        assertThrows(IllegalArgumentException.class, () -> curveService.findCurveById(savedCurvePoint.getId()));
+    }
 }
