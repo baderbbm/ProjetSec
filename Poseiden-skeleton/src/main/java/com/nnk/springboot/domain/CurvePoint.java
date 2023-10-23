@@ -42,11 +42,7 @@ public class CurvePoint {
 		this.term = term;
 		this.value = value;
 	}
-
-	public CurvePoint(int i, double d, double e) {
-		// TODO Auto-generated constructor stub
-	}
-
+	
 	public Integer getId() {
 		return id;
 	}
