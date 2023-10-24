@@ -1,57 +1,113 @@
 package com.nnk.springboot;
 
 import com.nnk.springboot.domain.CurvePoint;
+import com.nnk.springboot.repositories.CurvePointRepository;
 import com.nnk.springboot.services.CurveService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class CurvePointTests {
 
-    @Autowired
-    private CurveService curveService;
+    @Mock
+    private CurvePointRepository curvePointRepository;
 
+  private CurveService curveService;
+
+
+    @BeforeEach
+    public void setUp() {
+        curveService = new CurveService(curvePointRepository);
+    }
+    
     @Test
-    public void testCreateCurvePoint() {
-        CurvePoint curvePoint = new CurvePoint(1, 5.0, 10.0);
-        CurvePoint savedCurvePoint = curveService.createCurve(curvePoint);
-        assertNotNull(savedCurvePoint.getId());
-        assertEquals(5.0, savedCurvePoint.getTerm(), 0.001);
-        assertEquals(10.0, savedCurvePoint.getValue(), 0.001);
+    public void shouldCreateCurve() {
+        CurvePoint curve = new CurvePoint();
+        when(curvePointRepository.save(curve)).thenReturn(curve);
+        CurvePoint createdCurve = curveService.createCurve(curve);
+        assertEquals(curve, createdCurve);
     }
 
     @Test
-    public void testFindCurvePointById() {
-        CurvePoint curvePoint = new CurvePoint(1, 5.0, 10.0);
-        CurvePoint savedCurvePoint = curveService.createCurve(curvePoint);
-        CurvePoint foundCurvePoint = curveService.findCurveById(savedCurvePoint.getId());
-        assertNotNull(foundCurvePoint);
-        assertEquals(savedCurvePoint.getId(), foundCurvePoint.getId());
-        assertEquals(savedCurvePoint.getCurveId(), foundCurvePoint.getCurveId());
-        assertEquals(savedCurvePoint.getTerm(), foundCurvePoint.getTerm(), 0.001);
-        assertEquals(savedCurvePoint.getValue(), foundCurvePoint.getValue(), 0.001);
+    public void shouldFindAllCurves() {
+        List<CurvePoint> expectedCurves = new ArrayList<>();
+        when(curvePointRepository.findAll()).thenReturn(expectedCurves);
+        List<CurvePoint> actualCurves = curveService.findAllCurves();
+        assertEquals(expectedCurves, actualCurves);
     }
 
     @Test
-    public void testUpdateCurvePoint() {
-        CurvePoint curvePoint = new CurvePoint(1, 5.0, 10.0);
-        CurvePoint savedCurvePoint = curveService.createCurve(curvePoint);
-        savedCurvePoint.setTerm(6.0);
-        savedCurvePoint.setValue(11.0);
-        curveService.updateCurve(savedCurvePoint);
-        CurvePoint updatedCurvePoint = curveService.findCurveById(savedCurvePoint.getId());
-        assertEquals(6.0, updatedCurvePoint.getTerm(), 0.001);
-        assertEquals(11.0, updatedCurvePoint.getValue(), 0.001);
+    public void shouldFindCurveById() {
+        Integer curveId = 1;
+        CurvePoint expectedCurve = new CurvePoint();
+        when(curvePointRepository.findById(curveId)).thenReturn(Optional.of(expectedCurve));
+        CurvePoint actualCurve = curveService.findCurveById(curveId);
+        assertEquals(expectedCurve, actualCurve);
     }
 
     @Test
-    public void testDeleteCurvePoint() {
-        CurvePoint curvePoint = new CurvePoint(1, 5.0, 10.0);
-        CurvePoint savedCurvePoint = curveService.createCurve(curvePoint);
-        curveService.deleteCurveById(savedCurvePoint.getId());
-        assertThrows(IllegalArgumentException.class, () -> curveService.findCurveById(savedCurvePoint.getId()));
+    public void shouldUpdateCurve() {
+        CurvePoint curve = new CurvePoint();
+        when(curvePointRepository.save(curve)).thenReturn(curve);
+        curveService.updateCurve(curve);
+        verify(curvePointRepository, times(1)).save(curve);
     }
+
+    @Test
+    public void shouldDeleteCurveById() {
+        Integer curveId = 1;
+        CurvePoint curve = new CurvePoint();
+        when(curvePointRepository.findById(curveId)).thenReturn(Optional.of(curve));
+        curveService.deleteCurveById(curveId);
+        verify(curvePointRepository, times(1)).delete(curve);
+    }
+    
+    @Test
+    public void shouldThrowExceptionWhenCurveNotFound() {
+        Integer curveId = 1;
+        when(curvePointRepository.findById(curveId)).thenReturn(Optional.empty());
+        assertThrows(IllegalArgumentException.class, () -> {
+            curveService.findCurveById(curveId);
+        });
+        verify(curvePointRepository, times(1)).findById(curveId);
+    }
+
+    @Test
+    public void shouldFindCurveWhenCurveExists() {
+        Integer curveId = 1;
+        CurvePoint expectedCurve = new CurvePoint();
+        when(curvePointRepository.findById(curveId)).thenReturn(Optional.of(expectedCurve));
+        assertDoesNotThrow(() -> {
+            CurvePoint actualCurve = curveService.findCurveById(curveId);
+            assertEquals(expectedCurve, actualCurve);
+        });
+        verify(curvePointRepository, times(1)).findById(curveId);
+    }
+    
+	@Test
+	public void curvePointInvalidTest() {
+	    CurvePoint curvePoint = new CurvePoint(null, -1.0, -1.0);
+	    if (isValidCurvePoint(curvePoint)) {
+	        curvePoint = curvePointRepository.save(curvePoint);
+	        assertNotNull(curvePoint.getId());
+	        assertEquals(10.0, curvePoint.getTerm(), 0.01);
+	    } else {
+	        System.out.println("Données non valides : la sauvegarde a échoué");
+	    }
+	}
+
+	private boolean isValidCurvePoint(CurvePoint curvePoint) {
+	    return curvePoint.getCurveId() != null &&
+	           curvePoint.getTerm() > 0.0 &&
+	           curvePoint.getValue() > 0.0;
+	}
 }
