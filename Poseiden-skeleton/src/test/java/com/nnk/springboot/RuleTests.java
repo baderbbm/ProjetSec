@@ -41,4 +41,25 @@ public class RuleTests {
         Optional<RuleName> ruleList = ruleNameRepository.findById(id);
         assertFalse(ruleList.isPresent());
     }
+    
+    @Test
+    public void ruleNameInvalidTest() {
+        RuleName ruleName = new RuleName("", "", "", "", "", "");
+        if (isValidRuleName(ruleName)) {
+            ruleName = ruleNameRepository.save(ruleName);
+            assertNotNull(ruleName.getId());
+            assertEquals("ValidRuleName", ruleName.getName());
+        } else {
+            System.out.println("Données non valides : la sauvegarde a échoué");
+        }
+    }
+
+    private boolean isValidRuleName(RuleName ruleName) {
+        return !ruleName.getName().isEmpty() &&
+               !ruleName.getDescription().isEmpty() &&
+               !ruleName.getJson().isEmpty() &&
+               !ruleName.getTemplate().isEmpty() &&
+               !ruleName.getSqlStr().isEmpty() &&
+               !ruleName.getSqlPart().isEmpty();
+    }
 }
