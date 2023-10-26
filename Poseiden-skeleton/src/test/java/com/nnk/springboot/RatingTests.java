@@ -41,23 +41,16 @@ public class RatingTests {
         Optional<Rating> ratingList = ratingRepository.findById(id);
         assertFalse(ratingList.isPresent());
     }
+   
     @Test
     public void ratingInvalidTest() {
-        Rating rating = new Rating("", "", "", -1);
-        if (isValidRating(rating)) {
+        try {
+            long initialCount = ratingRepository.count();
+            Rating rating = new Rating("", "", "", -1);
             rating = ratingRepository.save(rating);
-            assertNotNull(rating.getId());
-            assertEquals("ValidRating", rating.getMoodysRating());
-        } else {
-            System.out.println("Données non valides : la sauvegarde a échoué");
+            long finalCount = ratingRepository.count();
+            assertEquals(initialCount, finalCount);
+        } catch (Exception e) {
         }
     }
-
-    private boolean isValidRating(Rating rating) {
-        return !rating.getMoodysRating().isEmpty() &&
-               !rating.getSandPRating().isEmpty() &&
-               !rating.getFitchRating().isEmpty() &&
-               rating.getOrderNumber() > 0;
-    }
-
-}
+}   
