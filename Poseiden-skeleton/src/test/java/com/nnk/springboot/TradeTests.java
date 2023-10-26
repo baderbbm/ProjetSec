@@ -41,4 +41,16 @@ public class TradeTests {
         Optional<Trade> tradeList = tradeRepository.findById(id);
         assertFalse(tradeList.isPresent());
     }
+    
+    @Test
+    public void tradeInvalidTest() {
+        try {
+            long initialCount = tradeRepository.count();
+            Trade trade = new Trade("", "", -1.0);
+            trade = tradeRepository.save(trade);
+            long finalCount = tradeRepository.count();
+            assertEquals(initialCount, finalCount);
+        } catch (Exception e) {
+        }
+    }
 }
