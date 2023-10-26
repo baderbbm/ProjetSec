@@ -44,22 +44,13 @@ public class RuleTests {
     
     @Test
     public void ruleNameInvalidTest() {
-        RuleName ruleName = new RuleName("", "", "", "", "", "");
-        if (isValidRuleName(ruleName)) {
+        try {
+            long initialCount = ruleNameRepository.count();
+            RuleName ruleName = new RuleName("", "", "", "", "", "");
             ruleName = ruleNameRepository.save(ruleName);
-            assertNotNull(ruleName.getId());
-            assertEquals("ValidRuleName", ruleName.getName());
-        } else {
-            System.out.println("Données non valides : la sauvegarde a échoué");
+            long finalCount = ruleNameRepository.count();
+            assertEquals(initialCount, finalCount);
+        } catch (Exception e) {
         }
-    }
-
-    private boolean isValidRuleName(RuleName ruleName) {
-        return !ruleName.getName().isEmpty() &&
-               !ruleName.getDescription().isEmpty() &&
-               !ruleName.getJson().isEmpty() &&
-               !ruleName.getTemplate().isEmpty() &&
-               !ruleName.getSqlStr().isEmpty() &&
-               !ruleName.getSqlPart().isEmpty();
     }
 }
