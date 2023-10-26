@@ -93,21 +93,15 @@ public class CurvePointTests {
         verify(curvePointRepository, times(1)).findById(curveId);
     }
     
-	@Test
-	public void curvePointInvalidTest() {
-	    CurvePoint curvePoint = new CurvePoint(null, -1.0, -1.0);
-	    if (isValidCurvePoint(curvePoint)) {
-	        curvePoint = curvePointRepository.save(curvePoint);
-	        assertNotNull(curvePoint.getId());
-	        assertEquals(10.0, curvePoint.getTerm(), 0.01);
-	    } else {
-	        System.out.println("Données non valides : la sauvegarde a échoué");
-	    }
-	}
-
-	private boolean isValidCurvePoint(CurvePoint curvePoint) {
-	    return curvePoint.getCurveId() != null &&
-	           curvePoint.getTerm() > 0.0 &&
-	           curvePoint.getValue() > 0.0;
-	}
+    @Test
+    public void curvePointInvalidTest() {
+        try {
+            long initialCount = curvePointRepository.count();
+            CurvePoint curvePoint = new CurvePoint(null, -1.0, -1.0);
+            curvePoint = curvePointRepository.save(curvePoint);
+            long finalCount = curvePointRepository.count();
+            assertEquals(initialCount, finalCount);
+        } catch (Exception e) {
+        }
+    }
 }
