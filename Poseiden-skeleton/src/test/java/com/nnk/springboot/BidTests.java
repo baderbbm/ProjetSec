@@ -40,21 +40,16 @@ public class BidTests {
 		assertFalse(bidList.isPresent());
 	}
 
+	
 	@Test
-	public void bidListInvalidTest() {
-	    BidList bid = new BidList("", "", -1);
-	    if (isValidBid(bid)) {
+	public void testNoSaveWhenDataIsInvalid() {
+	    try {
+	        long initialCount = bidListRepository.count();	       
+	        BidList bid = new BidList("", "", -1);
 	        bid = bidListRepository.save(bid);
-	        assertNotNull(bid.getId());
-	        assertEquals(10d, bid.getBidQuantity(), 0.01);
-	    } else {
-	        System.out.println("Données non valides : la sauvegarde a échoué");
+	        long finalCount = bidListRepository.count();
+	        assertEquals(initialCount, finalCount);
+	    } catch (Exception e) {
 	    }
-	}
-
-	private boolean isValidBid(BidList bid) {
-	    return !bid.getAccount().isEmpty() &&
-	           !bid.getType().isEmpty() &&
-	           bid.getBidQuantity() > 0;
 	}
 }
