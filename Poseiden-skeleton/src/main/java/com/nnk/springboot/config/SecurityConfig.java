@@ -8,6 +8,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.beans.factory.annotation.Autowired;
 
+/**
+ * La classe SecurityConfig configure la sécurité de l'application en utilisant Spring Security.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {	
@@ -19,43 +22,50 @@ public class SecurityConfig {
         this.customUserDetailsService = customUserDetailsService;
     }
     
+    /**
+     * Configure un encodeur de mot de passe BCrypt.
+     *
+     * @return Un bean BCryptPasswordEncoder.
+     */
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
  
-// Définir l'enchaînement des filtres de sécurité qui sont appliqués aux demandes entrantes dans l'application. 
-   
+    /**
+     * Définit l'enchaînement des filtres de sécurité appliqués aux demandes entrantes dans l'application.
+     *
+     * @param http La configuration HttpSecurity pour définir les règles de sécurité.
+     * @return Un SecurityFilterChain configuré.
+     * @throws Exception En cas d'erreur lors de la configuration de la sécurité.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests()
             .requestMatchers("/login").permitAll()
-              //  .requestMatchers("/admin/**").hasRole("ADMIN") 
-               // .requestMatchers("/user/**").hasRole("USER")
-             .requestMatchers("/user/home").hasRole("USER")
-             .requestMatchers("/user/list").hasRole("ADMIN")
-             .anyRequest().authenticated();
+            .requestMatchers("/user/home").hasRole("USER")
+            .requestMatchers("/user/list").hasRole("ADMIN")
+            .anyRequest().authenticated();
         http
             .formLogin()
-             .loginPage("/login")
-             .loginProcessingUrl("/process-login")
-              .defaultSuccessUrl("/", true) // Redirige vers la page d'accueil ("/") après la connexion
-              .failureUrl("/login?error=true")
-              .permitAll()
-             .and()
+            .loginPage("/login")
+            .loginProcessingUrl("/process-login")
+            .defaultSuccessUrl("/", true) // Redirige vers la page d'accueil ("/") après la connexion
+            .failureUrl("/login?error=true")
+            .permitAll()
+            .and()
             .logout()
-             //   .logoutSuccessUrl("/login?logout=true")
-            .logoutUrl("/app-logout") // Configurez l'URL de déconnexion
+            .logoutUrl("/app-logout") // Configure l'URL de déconnexion
             .logoutSuccessUrl("/login") // Redirection après la déconnexion
-            .invalidateHttpSession(true) // Invalidate la session après la déconnexion
-            .deleteCookies("JSESSIONID") // Supprimez les cookies après la déconnexion
+            .invalidateHttpSession(true) // Invalide la session après la déconnexion
+            .deleteCookies("JSESSIONID") // Supprime les cookies après la déconnexion
             .permitAll()
             .and()
             .csrf()
             .disable()
-             .exceptionHandling()
-              .accessDeniedPage("/app/error"); // Redirige vers la page d'erreur en cas d'accès refusé
+            .exceptionHandling()
+            .accessDeniedPage("/app/error"); // Redirige vers la page d'erreur en cas d'accès refusé
 		    
         return http.build();
     }
