@@ -39,13 +39,16 @@ public class SecurityConfig {
      * @return Un SecurityFilterChain configuré.
      * @throws Exception En cas d'erreur lors de la configuration de la sécurité.
      */
+     
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests()
             .requestMatchers("/login").permitAll()
-            .requestMatchers("/user/home").hasRole("USER")
-            .requestMatchers("/user/list").hasRole("ADMIN")
+           // .requestMatchers("/user/home").hasRole("USER")
+           // .requestMatchers("/user/list").hasRole("ADMIN")
+            .requestMatchers("/admin/home", "/user/list", "/user/add", "/user/update/**", "/user/delete/**").hasRole("ADMIN")
+            .requestMatchers("/user/home", "bidList/list", "curvePoint/list", "rating/list", "trade/list", "ruleName/list").hasRole("USER")
             .anyRequest().authenticated();
         http
             .formLogin()
