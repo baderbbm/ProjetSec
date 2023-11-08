@@ -69,4 +69,15 @@ public class HomeController {
 	public String login() {
 		return "login";
 	}
+
+	/**
+	 * Gère la requête GET "/sessionExpired" et renvoie la vue de la page d'expiration de session.
+	 *
+	 * @return Une chaîne représentant la vue de la page d'expiration de session.
+	 */
+	@GetMapping("/sessionExpired")
+	public String sessionExpired() {
+		return "sessionExpired";
+	}
+
 }
