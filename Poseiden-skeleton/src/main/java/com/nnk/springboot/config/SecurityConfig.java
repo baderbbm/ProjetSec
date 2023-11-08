@@ -4,8 +4,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.session.SimpleRedirectInvalidSessionStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -42,11 +44,10 @@ public class SecurityConfig {
      
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
         http
             .authorizeHttpRequests()
-            .requestMatchers("/login").permitAll()
-           // .requestMatchers("/user/home").hasRole("USER")
-           // .requestMatchers("/user/list").hasRole("ADMIN")
+            .requestMatchers("/login", "/sessionExpired").permitAll()
             .requestMatchers("/admin/home", "/user/list", "/user/add", "/user/update/**", "/user/delete/**").hasRole("ADMIN")
             .requestMatchers("/user/home", "bidList/list", "curvePoint/list", "rating/list", "trade/list", "ruleName/list").hasRole("USER")
             .anyRequest().authenticated();
@@ -68,8 +69,21 @@ public class SecurityConfig {
             .csrf()
             .disable()
             .exceptionHandling()
-            .accessDeniedPage("/app/error"); // Redirige vers la page d'erreur en cas d'accès refusé
-		    
+            .accessDeniedPage("/app/error");// Redirige vers la page d'erreur en cas d'accès refusé
+
+        	http
+        	.sessionManagement()
+        	.invalidSessionStrategy(new SimpleRedirectInvalidSessionStrategy("/sessionExpired"))// Redirection en cas de session expirée
+        	.maximumSessions(1) // Nombre maximum de sessions autorisées
+        	.maxSessionsPreventsLogin(true);// Empêcher l'utilisateur de se connecter s'il dépasse le nombre maximal de sessions
+
+            http
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // La session sera créée uniquement si nécessaire
+            .and()
+            .sessionManagement()
+            .enableSessionUrlRewriting(false); // Empêchez l'ajout automatique de l'identifiant de session aux URL
+                
         return http.build();
     }
 }
