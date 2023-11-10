@@ -69,7 +69,7 @@ public class SecurityConfig {
             .csrf()
             .disable() // Désactive la protection CSRF
             .exceptionHandling()
-            .accessDeniedPage("/app/error");// Redirige vers la page d'erreur en cas d'accès refusé
+            .accessDeniedPage("/app/error");  // Redirige vers la page d'erreur en cas d'accès refusé
 
         	http
         	.sessionManagement()
