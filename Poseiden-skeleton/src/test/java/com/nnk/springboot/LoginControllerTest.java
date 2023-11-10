@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.servlet.ModelAndView;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -13,6 +14,9 @@ import static org.mockito.Mockito.when;
 public class LoginControllerTest {
 
     private LoginController loginController;
+    
+    @Mock
+    private Authentication mockAuthentication;
 
     @Mock
     private UserRepository userRepository;
@@ -42,13 +46,21 @@ public class LoginControllerTest {
     }
 
     @Test
-    public void testError() {
-        ModelAndView expectedModelAndView = new ModelAndView();
-        String errorMessage = "You are not authorized for the requested data.";
-        expectedModelAndView.addObject("errorMsg", errorMessage);
-        expectedModelAndView.setViewName("403");
-        ModelAndView modelAndView = loginController.error();
-        assertEquals(expectedModelAndView.getViewName(), modelAndView.getViewName());
-        assertEquals(expectedModelAndView.getModel().get("errorMsg"), modelAndView.getModel().get("errorMsg"));
+    void testErrorWithAuthentication() {
+        when(mockAuthentication.getName()).thenReturn("user");
+        when(mockAuthentication.isAuthenticated()).thenReturn(true);
+        ModelAndView modelAndView = loginController.error(mockAuthentication);
+        assertEquals("403", modelAndView.getViewName());
+        assertEquals("You are not authorized for the requested data.", modelAndView.getModel().get("errorMsg"));
+        assertEquals("user", modelAndView.getModel().get("username"));
+    }
+
+    @Test
+    void testErrorWithoutAuthentication() {
+        when(mockAuthentication.isAuthenticated()).thenReturn(false);
+        ModelAndView modelAndView = loginController.error(mockAuthentication);
+        assertEquals("403", modelAndView.getViewName());
+        assertEquals("You are not authorized for the requested data.", modelAndView.getModel().get("errorMsg"));
+        assertEquals(null, modelAndView.getModel().get("username"));
     }
 }
