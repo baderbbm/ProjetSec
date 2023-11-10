@@ -53,11 +53,11 @@ public class SecurityConfig {
             .anyRequest().authenticated();
         http
             .formLogin()
-            .loginPage("/login")
-            .loginProcessingUrl("/process-login")
-            .defaultSuccessUrl("/", true) // Redirige vers la page d'accueil ("/") après la connexion
-            .failureUrl("/login?error=true")
-            .permitAll()
+            .loginPage("/login") // Page de connexion personnalisée
+            .loginProcessingUrl("/process-login") // l'URL de l'endpoint vers lequel le formulaire de connexion sera posté
+            .defaultSuccessUrl("/", true) // Rediriger vers la page d'accueil après une connexion réussie
+            .failureUrl("/login?error=true") // Rediriger vers la page de connexion en cas d'échec de connexion
+            .permitAll() // Autoriser l'accès à la page de connexion à tout le monde
             .and()
             .logout()
             .logoutUrl("/app-logout") // Configure l'URL de déconnexion
