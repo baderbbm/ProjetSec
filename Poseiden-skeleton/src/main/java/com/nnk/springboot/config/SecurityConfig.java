@@ -64,7 +64,7 @@ public class SecurityConfig {
             .logoutSuccessUrl("/login?logout=true") // Redirection en cas de déconnexion réussie
             .invalidateHttpSession(true) // Invalide la session après la déconnexion
             .deleteCookies("JSESSIONID") // Supprime le cookie "JSESSIONID" lors de la déconnexion
-            .permitAll()
+            .permitAll()  // Autoriser l'accès à la page de déconnexion à tout le monde
             .and()
             .csrf()
             .disable()
