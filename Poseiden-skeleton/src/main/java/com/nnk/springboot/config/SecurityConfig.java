@@ -67,7 +67,7 @@ public class SecurityConfig {
             .permitAll()  // Autoriser l'accès à la page de déconnexion à tout le monde
             .and()
             .csrf()
-            .disable()
+            .disable() // Désactive la protection CSRF
             .exceptionHandling()
             .accessDeniedPage("/app/error");// Redirige vers la page d'erreur en cas d'accès refusé
 
