@@ -61,9 +61,9 @@ public class SecurityConfig {
             .and()
             .logout()
             .logoutUrl("/app-logout") // Configure l'URL de déconnexion
-            .logoutSuccessUrl("/login?logout=true")
+            .logoutSuccessUrl("/login?logout=true") // Redirection en cas de déconnexion réussie
             .invalidateHttpSession(true) // Invalide la session après la déconnexion
-            .deleteCookies("JSESSIONID") // Supprime les cookies après la déconnexion
+            .deleteCookies("JSESSIONID") // Supprime le cookie "JSESSIONID" lors de la déconnexion
             .permitAll()
             .and()
             .csrf()
