@@ -49,7 +49,7 @@ public class SecurityConfig {
             .authorizeHttpRequests()
             .requestMatchers("/login", "/sessionExpired").permitAll()
             .requestMatchers("/admin/home", "/user/list", "/user/add", "/user/update/**", "/user/delete/**").hasRole("ADMIN")
-            .requestMatchers("/user/home", "bidList/list", "curvePoint/list", "rating/list", "trade/list", "ruleName/list").hasRole("USER")
+            .requestMatchers("/user/home", "bidList/**", "curvePoint/**", "rating/**", "trade/**", "ruleName/**").hasRole("USER")
             .anyRequest().authenticated();
         http
             .formLogin()
@@ -61,7 +61,7 @@ public class SecurityConfig {
             .and()
             .logout()
             .logoutUrl("/app-logout") // Configure l'URL de déconnexion
-            .logoutSuccessUrl("/login") // Redirection après la déconnexion
+            .logoutSuccessUrl("/login?logout=true")
             .invalidateHttpSession(true) // Invalide la session après la déconnexion
             .deleteCookies("JSESSIONID") // Supprime les cookies après la déconnexion
             .permitAll()
@@ -73,16 +73,13 @@ public class SecurityConfig {
 
         	http
         	.sessionManagement()
-        	.invalidSessionStrategy(new SimpleRedirectInvalidSessionStrategy("/sessionExpired"))// Redirection en cas de session expirée
+        	.invalidSessionStrategy(new SimpleRedirectInvalidSessionStrategy("/sessionExpired")) // Redirection en cas de session expirée
         	.maximumSessions(1) // Nombre maximum de sessions autorisées
         	.maxSessionsPreventsLogin(true);// Empêcher l'utilisateur de se connecter s'il dépasse le nombre maximal de sessions
 
             http
             .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // La session sera créée uniquement si nécessaire
-            .and()
-            .sessionManagement()
-            .enableSessionUrlRewriting(false); // Empêchez l'ajout automatique de l'identifiant de session aux URL
+            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED); // La session sera créée uniquement si nécessaire
                 
         return http.build();
     }
