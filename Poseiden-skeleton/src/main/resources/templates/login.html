@@ -62,7 +62,7 @@
 <div th:if="${param.logout}">
     You have been logged out.
 </div>
-<div class="container"> <!-- Ajoutez une div de conteneur pour aligner le contenu en haut à gauche -->
+<div class="container"> 
     <form method="post" th:action="@{/process-login}">
         <div>
             <input name="username" placeholder="Username" type="text"/>
