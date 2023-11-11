@@ -79,5 +79,4 @@ public class HomeController {
 	public String sessionExpired() {
 		return "sessionExpired";
 	}
-
 }
