@@ -71,15 +71,15 @@ public class SecurityConfig {
             .exceptionHandling()
             .accessDeniedPage("/app/error");  // Redirige vers la page d'erreur en cas d'accès refusé
 
-        	http
-        	.sessionManagement()
-        	.invalidSessionStrategy(new SimpleRedirectInvalidSessionStrategy("/sessionExpired")) // Redirection en cas de session expirée
-        	.maximumSessions(1) // Nombre maximum de sessions autorisées
-        	.maxSessionsPreventsLogin(true);// Empêcher l'utilisateur de se connecter s'il dépasse le nombre maximal de sessions
-
-            http
+       http
             .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED); // La session sera créée uniquement si nécessaire
+            .invalidSessionStrategy(new SimpleRedirectInvalidSessionStrategy("/sessionExpired")) // Redirection en cas de session expirée
+            .maximumSessions(1) // Nombre maximum de sessions autorisées
+            .maxSessionsPreventsLogin(true);// Empêcher l'utilisateur de se connecter s'il dépasse le nombre maximal de sessions
+   
+       http
+           .sessionManagement()
+           .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED); // La session sera créée uniquement si nécessaire
                 
         return http.build();
     }
